@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  app:
+    image: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    tty: true
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+
+  dev:
+    image: dev
+    build:
+      context: .
+      dockerfile: develop.Dockerfile
+    ports:
+      - '3000:3000'
+    tty: true
+
+  prod:
+    image: prod
+    build:
+      context: .
+      dockerfile: produce.Dockerfile
+
+  mongodb:
+    image: mongo:4
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/test
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:
